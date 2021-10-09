@@ -1,5 +1,5 @@
 # Snowman-J
-A rapid ABE implementation tool in Java, which is based on Java Pairing Based Cryptography Library (JPBC).
+A rapid attribute-based encryption (ABE) and chameleon hash(CH) implementation tool in Java, which is based on Java Pairing Based Cryptography Library (JPBC).
 
 * KP-HABE-NMaCS
 
@@ -9,4 +9,11 @@ A rapid ABE implementation tool in Java, which is based on Java Pairing Based Cr
 
 	The source code can be found in \schemes\KP_HABE_NMaCS.java, \schemes\OKP_HABE_NMaCS.java and \schemes\CP_HABEwCS.java.
 
+* IB-CH
+
+	+  LSXD21, Efficient identity-based chameleon hash for mobile devices
+        +  XSLD20, Identity-Based Chameleon Hash without Random Oracles and Application in the Mobile Internet, ICC'2021
+        +  ZSNS03, ID-Based Chameleon Hashes from Bilinear Pairings, IACR 
+
+	The implementation of each construction includes four algorithms, i.e. Setup, KeyGen, Hash, Col. The source code can be found in \IB-CH\LSXD21.java, \IB-CH\XSLD20.java, \IB-CH\ZSNS03_One.java and \IB-CH\ZSNS03_Two.java.
 
