@@ -67,7 +67,7 @@ public class ZSNS03_One {
 		// Compute ele_ID = H_0(ID)
 		Element ele_ID = pairing.getG1().newElement().setFromHash(ID, 0, ID.length).getImmutable();
 
-		// Compute td = ele_ID^s
+		// Compute td = H_0(ID)^s
 		Element trapdoor = ele_ID.powZn(s).getImmutable();
 
 		// The same function as that of the codes above

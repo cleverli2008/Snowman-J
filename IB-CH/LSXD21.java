@@ -74,11 +74,11 @@ public class LSXD21 {
 		// Get g from pk
 		Element g = ((Element) pk.get("g")).duplicate().getImmutable();
 
-		// obtain the master key
+		// Obtain the master key
 		Element alpha = ((Element) msk.get("alpha")).duplicate().getImmutable();
 		Element beta = ((Element) msk.get("beta")).duplicate().getImmutable();
 
-		// Random Pick t
+		// Randomly pick t
 		Element t = pairing.getZr().newRandomElement().getImmutable();
 
 		// Hash ID to the element of Z_p
@@ -157,6 +157,7 @@ public class LSXD21 {
 		inside_r[0] = r_1_prime.duplicate();
 		inside_r[1] = r_2_prime.duplicate();
 
+		// The same function as that of the code above
 		long endTime = System.nanoTime();
 		System.out.println(String.format("%.2f", (float) ((endTime - startTime) / 1_000_000.0000)) + " ");
 		return inside_r;
@@ -172,11 +173,11 @@ public class LSXD21 {
 		Element e_gg = ((Element) pk.get("e_gg")).duplicate().getImmutable();
 		Element e_gg_2 = ((Element) pk.get("e_gg_2")).duplicate().getImmutable();
 
-		// Get r'_1 and r'_2 from r
+		// Get r'_1 and r'_2 from r'
 		Element r_1_prime = r_new[0].duplicate().getImmutable();
 		Element r_2_prime = r_new[1].duplicate().getImmutable();
 
-		// Hash the m' and ID to the elements of Z_p
+		// Hash m' and ID to the elements of Z_p
 		Element ele_m_prime = pairing.getZr().newElement().setFromHash(m_prime, 0, m_prime.length).getImmutable();
 		Element ele_ID = pairing.getZr().newElement().setFromHash(ID, 0, ID.length).getImmutable();
 
