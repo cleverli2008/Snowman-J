@@ -2,18 +2,19 @@ package utils;
 
 import it.unisa.dia.gas.jpbc.Element;
 import it.unisa.dia.gas.jpbc.Pairing;
-import it.unisa.dia.gas.plaf.jpbc.pairing.PairingFactory;
+
+/**
+ * @ClassName: Solve
+ * @Description: Realize the Gaussian elimination method
+ * @author:cleverli2008
+ * @update:2021/11/26
+ * @version: v1.0
+ */
 
 public class Solve {
 
-	/**
-	 * @ Gaussian Elimination Method
-	 */
+	private Pairing pairing = PairingManager.getDefaultPairing();
 
-	// get the default pairing
-	//private Pairing pairing = PairingManager.getDefaultPairing();
-	private Pairing pairing = PairingFactory.getPairing("schemes/a.properties");
-	
 	// coefficient matrix
 	private Element M[][];
 
@@ -26,11 +27,9 @@ public class Solve {
 	// exchange times
 	private int exchangeTimes;
 
-//	// quare or not
-//	private boolean isSquare;
-
 	// error flag
-	private boolean misMatchFlag=false;
+	private boolean misMatchFlag = false;
+
 	public Solve() {
 		this.M = this.genRandomMatrix(2, 4);
 		this.b = this.genb(2);
@@ -95,20 +94,18 @@ public class Solve {
 		Element zero = pairing.getZr().newZeroElement().getImmutable();
 		for (int k = 0; k < M.length; k++) {
 			swap(k);
-			for (int i = k + 1; i < M.length ; i++) {
+			for (int i = k + 1; i < M.length; i++) {
 				// times
-				if(k<M[0].length){
-				Element tempEle = M[i][k].div(M[k][k]).getImmutable();
-				M[i][k] = pairing.getZr().newZeroElement().getImmutable();
-				for (int j = k + 1; j < M[0].length; j++)
-					M[i][j] = M[i][j].add((tempEle.mul(M[k][j])).negate())
-							.getImmutable();
-				b[i] = b[i].add((tempEle.mul(b[k])).negate()).getImmutable();
-			}
-				else if(!b[k].equals(zero)){
-					misMatchFlag=true;
+				if (k < M[0].length) {
+					Element tempEle = M[i][k].div(M[k][k]).getImmutable();
+					M[i][k] = pairing.getZr().newZeroElement().getImmutable();
+					for (int j = k + 1; j < M[0].length; j++)
+						M[i][j] = M[i][j].add((tempEle.mul(M[k][j])).negate()).getImmutable();
+					b[i] = b[i].add((tempEle.mul(b[k])).negate()).getImmutable();
+				} else if (!b[k].equals(zero)) {
+					misMatchFlag = true;
 				}
-		}
+			}
 //			System.out.println("\nAfter " + k + "th elimination:");
 //			PrintM();
 		}
@@ -133,8 +130,7 @@ public class Solve {
 		int[] count = new int[M.length];
 		for (int i = M.length - 1; i >= 0; i--) {
 			count[i] = isEmpty(M[i]);
-			if (!b[i].isEqual(zero) && count[i] == 0||misMatchFlag) {
-//				System.out.print("You can't decrypt this file!");
+			if (!b[i].isEqual(zero) && count[i] == 0 || misMatchFlag) {
 				return false;
 			}
 		}
@@ -147,10 +143,8 @@ public class Solve {
 			for (int i = 0; i < difference; i++) {
 				omega[M[0].length - 1 - i] = zero.duplicate();
 			}
-			for (int i = M.length - 1, j = M[0].length - 1 - difference; i >= 0
-					&& j >= 0; i--, j--)
-				omega[i] = (b[i].add(computePartialSum(i).negate())).div(
-						M[i][j]).getImmutable();
+			for (int i = M.length - 1, j = M[0].length - 1 - difference; i >= 0 && j >= 0; i--, j--)
+				omega[i] = (b[i].add(computePartialSum(i).negate())).div(M[i][j]).getImmutable();
 			return true;
 		}
 		// example
@@ -160,47 +154,38 @@ public class Solve {
 		// 0 0 0
 		else {
 			int rowIndex = -1;
-			for (int i = (M.length-1); i >= 0; i--) {
+			for (int i = (M.length - 1); i >= 0; i--) {
 				if (count[i] != 0) {
 					rowIndex = i;
 					break;
 				}
 			}
-			if (rowIndex!=(M.length-1)) {
-			
-				if(!(M[rowIndex][M[0].length - 1].equals(zero))){
-				   omega[rowIndex] = b[rowIndex].div(
-						 M[rowIndex][M[0].length - 1]).getImmutable();
+			if (rowIndex != (M.length - 1)) {
+
+				if (!(M[rowIndex][M[0].length - 1].equals(zero))) {
+					omega[rowIndex] = b[rowIndex].div(M[rowIndex][M[0].length - 1]).getImmutable();
+				} else {
+					omega[rowIndex] = zero.duplicate();
 				}
-				else {
-					omega[rowIndex]=zero.duplicate();
-				}
-				for (int i = rowIndex-1, j = M[0].length - 2; i >= 0
-						&& j >= 0; i--, j--)
+				for (int i = rowIndex - 1, j = M[0].length - 2; i >= 0 && j >= 0; i--, j--)
 					if (!M[i][j].equals(zero))
-						omega[i] = (b[i].add(computePartialSum(i).negate()))
-								.div(M[i][j]).getImmutable();
+						omega[i] = (b[i].add(computePartialSum(i).negate())).div(M[i][j]).getImmutable();
 					else {
 						omega[i] = zero.duplicate();
 					}
 			} else {
-				if(!(M[M.length - 1][M[0].length - 1].equals(zero))){
-				omega[M[0].length - 1] = b[M.length - 1].div(
-						M[M.length - 1][M[0].length - 1]).getImmutable();
-				}
-				else {
+				if (!(M[M.length - 1][M[0].length - 1].equals(zero))) {
+					omega[M[0].length - 1] = b[M.length - 1].div(M[M.length - 1][M[0].length - 1]).getImmutable();
+				} else {
 					omega[M[0].length - 1] = zero.duplicate();
 				}
-				for (int i = M.length - 2, j = M[0].length - 2; i >= 0
-						&& j >= 0; i--, j--)
+				for (int i = M.length - 2, j = M[0].length - 2; i >= 0 && j >= 0; i--, j--)
 					if (!M[i][j].equals(zero))
-						omega[i] = (b[i].add(computePartialSum(i).negate()))
-								.div(M[i][j]).getImmutable();
+						omega[i] = (b[i].add(computePartialSum(i).negate())).div(M[i][j]).getImmutable();
 					else {
 						omega[i] = zero.duplicate();
 					}
 			}
-
 			return true;
 		}
 
@@ -272,12 +257,9 @@ public class Solve {
 
 	// perform the solve action
 	public Element[] equationSolve() {
-		//this.PrintM();
 		this.elimination();
 		boolean flag = this.backSubstitution();
 		if (flag) {
-			//this.Print();
-//			System.out.println(this.verification());
 			return omega;
 		} else {
 			return null;
@@ -286,7 +268,7 @@ public class Solve {
 
 	public static void main(String[] args) {
 		Solve solve = new Solve();
-		//solve.PrintM();
+		// solve.PrintM();
 		solve.elimination();
 		boolean flag = solve.backSubstitution();
 		if (flag) {
