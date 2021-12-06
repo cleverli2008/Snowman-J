@@ -9,7 +9,7 @@ A rapid attribute-based encryption (ABE) and chameleon hash(CH) implementation t
 
 	The source code can be found in \schemes\KP_HABE_NMaCS.java, \schemes\OKP_HABE_NMaCS.java and \schemes\CP_HABEwCS.java.
 	
-	The pairings we employed are the default Type A and Type D pairing from jPBC.
+	The pairings we employed are the default Type A pairing and the default Type D pairing from jPBC.
 
 * IB-CH
 
