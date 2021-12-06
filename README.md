@@ -8,6 +8,8 @@ A rapid attribute-based encryption (ABE) and chameleon hash(CH) implementation t
 	The implementation of KP-HABE-NMaCS construction includes six algorithms, i.e. Setup, AuthKeyGen, AuthDelegate, UserKeyGen, Encrypt and Decrypt. Compared with the KP-HABE-NMaCS construction, the outsourced extension one includes one more algorithm, i.e. Transform. Meanwhile, the implementation of CP-HABEwCS construction includes five algorithms, i.e. Setup, CreateDA, Delegate, Encrypt, Decrypt.
 
 	The source code can be found in \schemes\KP_HABE_NMaCS.java, \schemes\OKP_HABE_NMaCS.java and \schemes\CP_HABEwCS.java.
+	
+	The pairings we employed are the default Type A and Type D pairing from jPBC.
 
 * IB-CH
 
