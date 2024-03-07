@@ -21,9 +21,9 @@ A rapid identity-based encryption (IBE), attribute-based encryption (ABE) and ch
 
 * IBEET
 
-	+  IBEET, Identity-based encryption with outsourced equality test in cloud computing, Inf. Sci., 2016
-	+  IBEET-DBA, Identity-based encryption with equality test and datestamp-based authorization mechanism, Theor. Comput. Sci., 2021
-	+  IBEET-FTBA, IBEET-FTBA: Identity-based encryption with equality test and flexible time-based authorization in the standard model 
+	+  IBEET, Identity-based encryption with outsourced equality test in cloud computing, Inf. Sci., 2016.
+	+  IBEET-DBA, Identity-based encryption with equality test and datestamp-based authorization mechanism, Theor. Comput. Sci., 2021.
+	+  IBEET-FTBA, Identity-Based Encryption with Equality Test and Flexible Time-Based Authorization for Cloud Computing, submitted to TDSC.
 
-	The implementations of IBBET constructions above all consist of six algorithms, which are Setup, KeyGen, Trapdoor (also called Auth in IBEET-DBA), Encrypt, Test, Decrypt. The corresponding source codes can be found in \IBEET\IBEET.java, \IB-CH\IBEET-DBA.java and \IB-CH\IBEET-FTBA.java. In addition, \IB-CH\Schnorr_OTS.java is the implementation of a one-time strong signature, while \IB-CH\Utils.java is a utility class for implementing IBEET constructions.
+	The implementations of the above IBBET constructions all consist of six algorithms, which are Setup, KeyGen, Trapdoor (also called Auth in IBEET-DBA), Encrypt, Test, Decrypt. The corresponding source codes can be found in \IBEET-FTBA\IBEET.java, \IBEET-FTBA\IBEET-DBA.java (based on the Type A pairings), \IBEET-FTBA\IBEET_DBA_TypeD.java (based on the Type D pairings), \IBEET-FTBA\IBEET_FTBA.java (based on the Type A pairings), \IBEET-FTBA\IBEET_FTBA_TypeD.java (based on the Type D pairings). In addition, \IBEET-FTBA\Utils.java is a utility class for implementing IBEET constructions and \IBEET-FTBA\Schnorr_OTS.java is the implementation of a one-time strong signature.
 
