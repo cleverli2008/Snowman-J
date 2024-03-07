@@ -16,12 +16,12 @@ import it.unisa.dia.gas.plaf.jpbc.pairing.PairingFactory;
 
 /**
 *  Created by cleverli on 2022.9.19
-*  Modified by cleverli on 2024.1.17
+*  Modified by cleverli on 2024.1.23
 **/
 
-public class IBEET_FTBA {
+public class IBEET_FTBA_TypeD {
 	
-	private Pairing pairing = PairingFactory.getPairing("scheme/a.properties");
+	private Pairing pairing = PairingFactory.getPairing("scheme/d224.properties");
 
 	public List<Map<String, Object>> setup(int l) {
 
@@ -41,13 +41,17 @@ public class IBEET_FTBA {
 		masterKey.put("alpha", alpha);
 
 		// Generate public parameters
-		Element g = pairing.getG1().newRandomElement().getImmutable();
-		Element h = pairing.getG1().newRandomElement().getImmutable();
-		Element h_prime = pairing.getG1().newRandomElement().getImmutable();
-		Element h_prime_2 = pairing.getG1().newRandomElement().getImmutable();
-		Element h_prime_3 = pairing.getG1().newRandomElement().getImmutable();
 		
+		//G1
+		Element g = pairing.getG1().newRandomElement().getImmutable();
 		Element g_1 = g.powZn(alpha).getImmutable();
+		
+		//G2
+		Element g_2 = pairing.getG2().newRandomElement().getImmutable();
+		Element h = pairing.getG2().newRandomElement().getImmutable();
+		Element h_prime = pairing.getG2().newRandomElement().getImmutable();
+		Element h_prime_2 = pairing.getG2().newRandomElement().getImmutable();
+		Element h_prime_3 = pairing.getG2().newRandomElement().getImmutable();
 		
 		
 		//Construct public parameters
@@ -56,6 +60,7 @@ public class IBEET_FTBA {
 		publicKey.put("l", l);
 
 		publicKey.put("g", g);
+		publicKey.put("g_2", g_2);
 		publicKey.put("h", h);
 		publicKey.put("h_prime", h_prime);
 		publicKey.put("h_prime_2", h_prime_2);
@@ -66,10 +71,10 @@ public class IBEET_FTBA {
 		publicKey.put("H_1", H_1);
 		publicKey.put("H_2", H_2);
 
-
+		//G2
 		for (int i = 1; i <= l; i++) {
-			Element h_i = pairing.getG1().newRandomElement().getImmutable();
-			Element u_i = pairing.getG1().newRandomElement().getImmutable();
+			Element h_i = pairing.getG2().newRandomElement().getImmutable();
+			Element u_i = pairing.getG2().newRandomElement().getImmutable();
 			publicKey.put("h_" + i, h_i);
 			publicKey.put("u_" + i, u_i);
 		}
@@ -82,7 +87,7 @@ public class IBEET_FTBA {
 		
 		// Evaluate
 		long endTime = System.nanoTime();
-		System.out.print(String.format("%.2f", (float) ((endTime - startTime) / 1_000_000.0000)) + " ");
+//		System.out.println(String.format("%.2f", (float) ((endTime - startTime) / 1_000_000.0000)) + " ");
 		return res;
 	}
 
@@ -114,7 +119,7 @@ public class IBEET_FTBA {
 		Element r_prime_3 = pairing.getZr().newRandomElement().getImmutable();
 
 		Element h = ((Element) pk.get("h")).duplicate().getImmutable();
-		Element g = ((Element) pk.get("g")).duplicate().getImmutable();
+		Element g = ((Element) pk.get("g_2")).duplicate().getImmutable();
 		Element h_prime = ((Element) pk.get("h_prime")).duplicate().getImmutable();
 		Element h_prime_2 = ((Element) pk.get("h_prime_2")).duplicate().getImmutable();
 		Element h_prime_3 = ((Element) pk.get("h_prime_3")).duplicate().getImmutable();
@@ -146,7 +151,7 @@ public class IBEET_FTBA {
 
 		// Evaluate
 		long endTime = System.nanoTime();
-		System.out.print(String.format("%.2f", (float) ((endTime - startTime) / 1_000_000.0000)) + " ");
+//		System.out.print(String.format("%.2f", (float) ((endTime - startTime) / 1_000_000.0000)) + " ");
 
 		return sk;
 	}
@@ -191,7 +196,7 @@ public class IBEET_FTBA {
 
 		Element t = pairing.getZr().newRandomElement().getImmutable();
 		Element D_2 = (g_1.mul(g.powZn(elem_ID.negate()))).powZn(t).getImmutable();
-		Element D_1 = pairing.getG1().newOneElement().getImmutable();
+		Element D_1 = pairing.getG2().newOneElement().getImmutable();
 
 
 		for (int i = 1; i <= P.length; i++) {
@@ -242,6 +247,8 @@ public class IBEET_FTBA {
 
 		Element g = ((Element) pk.get("g")).duplicate().getImmutable();
 		Element g_1 = ((Element) pk.get("g_1")).duplicate().getImmutable();
+		Element g_2 = ((Element) pk.get("g_2")).duplicate().getImmutable();
+		
 		Element h = ((Element) pk.get("h")).duplicate().getImmutable();
 		Element h_prime = ((Element) pk.get("h_prime")).duplicate().getImmutable();
 		Element h_prime_2 = ((Element) pk.get("h_prime_2")).duplicate().getImmutable();
@@ -257,10 +264,10 @@ public class IBEET_FTBA {
 
 		Element C_0 = g.powZn(z).getImmutable();
 		Element C_1 = g_1.powZn(s).mul(g.powZn((s.mul(elem_ID)).negate())).getImmutable();
-		Element C_2 = pairing.pairing(g, g).powZn(s).getImmutable();
+		Element C_2 = pairing.pairing(g, g_2).powZn(s).getImmutable();
 
 		// Compute C_3
-		Element elem_m = Utils.bytes2element(m, "G1");
+		Element elem_m = Utils.bytes2element(m, "G2");
 		
 		//For test
 		//System.out.println("m:"+ elem_m.toString());
@@ -270,11 +277,11 @@ public class IBEET_FTBA {
 
 		Element e_gh_s = pairing.pairing(g, h).powZn(s).getImmutable();
 		byte[] byte_e_gh_s = H_1.hash(e_gh_s.toBytes());
-		Element elem_e_gh_s = Utils.bytes2element(byte_e_gh_s, "G1").getImmutable();
+		Element elem_e_gh_s = Utils.bytes2element(byte_e_gh_s, "G2").getImmutable();
 		C_3 = C_3.mul(elem_e_gh_s).getImmutable();
 
 		// Compute C_4
-		Element C_4 = pairing.getG1().newOneElement().getImmutable();
+		Element C_4 = pairing.getG2().newOneElement().getImmutable();
 		for (int i = 1; i <= T.length; i++) {
 			Element h_i = ((Element) pk.get("h_" + i)).duplicate().getImmutable();
 			Element u_i = ((Element) pk.get("u_" + i)).duplicate().getImmutable();
@@ -343,15 +350,15 @@ public class IBEET_FTBA {
 		//obtain C_B_1
 		Element C_B_0 = ((Element)ct_B.get("C_0")).duplicate().getImmutable();
 		
-		Element delta_A = IBEET_FTBA.compute(pk, ct_A, td_A, pairing);
-		Element delta_B = IBEET_FTBA.compute(pk, ct_B, td_B, pairing);
-/
+		Element delta_A = IBEET_FTBA_TypeD.compute(pk, ct_A, td_A, pairing);
+		Element delta_B = IBEET_FTBA_TypeD.compute(pk, ct_B, td_B, pairing);
+
 		if(delta_A==null||delta_B==null){
 			return false;
 		}
 		
-		Element equ_left = pairing.pairing(delta_A,C_B_0).getImmutable();
-		Element equ_right = pairing.pairing(delta_B,C_A_0).getImmutable();
+		Element equ_left = pairing.pairing(C_B_0,delta_A).getImmutable();
+		Element equ_right = pairing.pairing(C_A_0,delta_B).getImmutable();
 		
 		if(equ_left.equals(equ_right)){
 			long endTime = System.nanoTime();
@@ -416,7 +423,6 @@ public class IBEET_FTBA {
 		byte[] C_3_prime = (byte[]) ct.get("C_3_prime");
 		Element C_4_prime = ((Element) ct.get("C_4_prime")).duplicate().getImmutable();
 		
-		Element elem_ID = Utils.bytes2element(ID.getBytes(), "Zr").getImmutable(); 
 		
 		//Condition two
 		//Compute w
@@ -441,14 +447,14 @@ public class IBEET_FTBA {
 		byte[] m = Utils.byteSpliter(byte_m_concate_z, z_length)[0];
 		byte[] byte_z = Utils.byteSpliter(byte_m_concate_z, z_length)[1];
 		
-		Element m_G1 = Utils.bytes2element(m, "G1").getImmutable();
+		Element m_G2 = Utils.bytes2element(m, "G2").getImmutable();
 		
 		Element z = pairing.getZr().newElementFromBytes(byte_z).getImmutable();
 		byte[] H1_byte_B = H_1.hash(B.toBytes());
 		
-		Element H1_byte_B_G1 = Utils.bytes2element(H1_byte_B, "G1").getImmutable();
+		Element H1_byte_B_G2 = Utils.bytes2element(H1_byte_B, "G2").getImmutable();
 		
-		Element equ_right_one = m_G1.powZn(z).mul(H1_byte_B_G1).getImmutable();
+		Element equ_right_one = m_G2.powZn(z).mul(H1_byte_B_G2).getImmutable();
 		Element equ_right_two = g.powZn(z).getImmutable();
 		
 		if (C_3.equals(equ_right_one) && C_0.equals(equ_right_two)) {
@@ -487,6 +493,13 @@ public class IBEET_FTBA {
 				System.out.println("Not matching!");
 				return null;
 			}
+
+			
+//			if(!Utils.prefix(T, T_prime))
+//			{
+//				System.out.println("Not matching!");
+//				return null;
+//			}
 			
 			Element overline_D_1 = D_1.duplicate().getImmutable();
 			
@@ -500,11 +513,11 @@ public class IBEET_FTBA {
 				overline_D_1 = overline_D_1.mul(D_i.powZn(T_i));
 			}
 		
-			Element B = (pairing.pairing(C_1, overline_D_1).mul(C_2.powZn(r))).div(pairing.pairing(C_4,D_2)).getImmutable();
+			Element B = (pairing.pairing(C_1, overline_D_1).mul(C_2.powZn(r))).div(pairing.pairing(D_2,C_4)).getImmutable();
 			byte[] H1_byte_B = H_1.hash(B.toBytes());
-			Element H1_B_G1 = Utils.bytes2element(H1_byte_B, "G1").getImmutable();
+			Element H1_B_G2 = Utils.bytes2element(H1_byte_B, "G2").getImmutable();
 			
-			Element delta = C_3.div(H1_B_G1).getImmutable();
+			Element delta = C_3.div(H1_B_G2).getImmutable();
 					
 			return delta;
 	  }
